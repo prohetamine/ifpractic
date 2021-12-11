@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/ifpractic/static/css/main.d913b0bb.chunk.css",
-    "main.js": "/ifpractic/static/js/main.5175c9e6.chunk.js",
-    "main.js.map": "/ifpractic/static/js/main.5175c9e6.chunk.js.map",
+    "main.js": "/ifpractic/static/js/main.f27d245d.chunk.js",
+    "main.js.map": "/ifpractic/static/js/main.f27d245d.chunk.js.map",
     "runtime-main.js": "/ifpractic/static/js/runtime-main.36bd1eac.js",
     "runtime-main.js.map": "/ifpractic/static/js/runtime-main.36bd1eac.js.map",
     "static/js/2.a26fe18d.chunk.js": "/ifpractic/static/js/2.a26fe18d.chunk.js",
@@ -15,6 +15,6 @@
     "static/js/runtime-main.36bd1eac.js",
     "static/js/2.a26fe18d.chunk.js",
     "static/css/main.d913b0bb.chunk.css",
-    "static/js/main.5175c9e6.chunk.js"
+    "static/js/main.f27d245d.chunk.js"
   ]
 }
