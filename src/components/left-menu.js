@@ -222,7 +222,7 @@ const Main = ({ taskId, description, defaultCodeFunction, testedCodeFunction, on
   useEffect(() => {
     const timeId = setInterval(() => {
       setDefaultCode(defaultCodeFunction)
-    }, isError ? 1000 : isLog ? 150 : 1000)
+    }, isError ? 1000 : isLog ? 300 : 1000)
 
     return () => clearInterval(timeId)
   }, [isLog, isError])
