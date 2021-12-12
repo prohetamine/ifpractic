@@ -243,6 +243,13 @@ const Main = ({ taskId, description, defaultCodeFunction, testedCodeFunction, on
         }
       }
 
+      window.hiddeLog = (...args) => {
+        const _args = (args || [])
+        if (isLog) {
+          setTesting(s => testedCodeFunction(defautCode.varData, ..._args) ? (s > 9 ? s : s + 1) : 0)
+        }
+      }
+
       eval(
         defautCode.code +
         normalizeCode +
@@ -339,7 +346,7 @@ const Main = ({ taskId, description, defaultCodeFunction, testedCodeFunction, on
         {
           isLog
             ? (
-              <Console ref={logRef}>
+              <Console ref={logRef} id='console'>
                 {
                   logs.map((row, key) => <Row key={key}>{row}</Row>)
                 }
