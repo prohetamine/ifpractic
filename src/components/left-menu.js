@@ -10,6 +10,8 @@ const LeftMenu = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
+  padding: 20px; 0px;
 `
 
 const TaskDescription = styled.div`
@@ -60,6 +62,7 @@ const Numbers = styled.div`
 `
 
 const Textarea = styled.textarea`
+  white-space: nowrap;
   margin-top: -2px;
   box-sizing: border-box;
   border: none;
@@ -99,9 +102,9 @@ const Button = styled.div`
   height: 36px;
   background: #FFFFFF;
   border-radius: 12px 0px;
-  position: absolute;
-  right: 0px;
-  bottom: 0px;
+  position: fixed;
+  left: 0px;
+  top: 0px;
   font-family: Roboto;
   font-style: normal;
   font-weight: normal;
@@ -219,31 +222,53 @@ const Main = ({ taskId, description, defaultCodeFunction, testedCodeFunction, on
   useEffect(() => {
     const timeId = setInterval(() => {
       setDefaultCode(defaultCodeFunction)
-    }, 1000)
+    }, isError ? 1000 : isLog ? 150 : 1000)
 
     return () => clearInterval(timeId)
-  }, [])
+  }, [isLog, isError])
 
   useEffect(() => {
      try {
-      const normalizeCode = mainCode.replace(/console\.log/gi, 'log')
+      const normalizeCode = mainCode
+                              .replace(/console\.log/gi, 'log')
+                              .replace(/for(\s?)+\(([^\)]?)+\)(\s?)+\{([^\}]?)+\}/gi, '__forNotFound__')
+                              .replace(/while(\s?)+\(([^\)]?)+\)(\s?)+\{([^\}]?)+\}/gi, '__forNotFound__')
+                              .replace(/eval(\s?)+\(([^\)]?)+\)/gi, '__evalNotFound__')
 
       window.log = (...args) => {
         const _args = (args || [])
-        setLogs(l => [...l, _args.join(' ')].slice(-100)) ||
-        setTesting(s => testedCodeFunction(defautCode.varData, ..._args) ? (s > 9 ? s : s + 1) : 0)
+        setLogs(l => [...l, _args.join(' ')].slice(-100))
+        if (isLog) {
+          setTesting(s => testedCodeFunction(defautCode.varData, ..._args) ? (s > 9 ? s : s + 1) : 0)
+        }
       }
 
       eval(
         defautCode.code +
-        normalizeCode
+        normalizeCode +
+        '\n\n\n' +
+        (defautCode.endCode || '')
       )
       setError(false)
     } catch (e) {
+      const error = e.toString()
+
+      if (error.match(/__forNotFound__/)) {
+        setLogs(l => [...l, 'Внимание: Вы пытаетесь использовать цикл, это может привести к непредсказуемым последствиям, поэтому мы исключаем его запуск. ⚠️'].slice(-100))
+        setError(true)
+        return
+      }
+
+      if (error.match(/__evalNotFound__/)) {
+        setLogs(l => [...l, 'Внимание: Вы пытаетесь использовать eval, это может привести к непредсказуемым последствиям, поэтому мы исключаем его запуск. ⚠️'].slice(-100))
+        setError(true)
+        return
+      }
+
       setError(true)
-      setLogs(l => [...l, 'Ошибка: '+e.toString()].slice(-100))
+      setLogs(l => [...l, 'Ошибка: '+error].slice(-100))
     }
-  }, [defautCode.code, mainCode])
+  }, [defautCode.code, mainCode, (defautCode.endCode || '')])
 
   useEffect(() => {
     const node = codeTextareaRef.current
@@ -293,17 +318,17 @@ const Main = ({ taskId, description, defaultCodeFunction, testedCodeFunction, on
         <BoldTitle>Задание #{taskId}</BoldTitle>
         <Description dangerouslySetInnerHTML={{ __html: description }}></Description>
       </TaskDescription>
-      <CodeTextarea ref={codeTextareaRef}>
-        <Numbers>
+      <CodeTextarea ref={codeTextareaRef} id='codeTextArea'>
+        <Numbers style={{ height: isLog ? '350px' : 'auto', overflow: isLog ? 'hidden' : 'visible' }}>
           {
             lines.map((_, key) => <Number key={key}>{key+1}</Number>)
           }
         </Numbers>
-        <Textarea style={{ height: ((lines.length * 18) + 10)+'px' }} value={defautCode.code}></Textarea>
+        <Textarea style={{ height: isLog ? '350px' : ((lines.length * 18) + 10)+'px' }} value={defautCode.code}></Textarea>
         <Textarea
           name='textarea'
           ref={textareaRef}
-          style={{ height: ((lines.length * 18) + 10)+'px' }}
+          style={{ height: isLog ? '350px' : ((lines.length * 18) + 10)+'px' }}
           value={mainCode}
           onChange={({ target: { value } }) => {
             const regexp_downline = new RegExp('^'+downline)
@@ -322,7 +347,7 @@ const Main = ({ taskId, description, defaultCodeFunction, testedCodeFunction, on
             )
             : null
         }
-        <Button onClick={() => setIsLog(s => !s)}>{isLog ? 'Перейти в код 💻' : 'Начать тест 🚀'}</Button>
+        <Button style={(({ bottom, right }) => ({ top: (bottom - 36)+'px', left: (right - 156)+'px' }))(document.getElementById('codeTextArea') ? document.getElementById('codeTextArea').getBoundingClientRect() : ({}))} onClick={() => setIsLog(s => !s)}>{isLog ? 'Перейти в код 💻' : 'Начать тест 🚀'}</Button>
       </CodeTextarea>
       <Status>
         <StatusTitle>

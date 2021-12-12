@@ -44,6 +44,7 @@ const Main = ({ confirmed, count }) => {
         <div>выполненно: {confirmed}</div>
         <div>осталось: {count}</div>
         <div>время на сайт: {parseInt(time / 60)} минут</div>
+        <div onClick={() => localStorage.clear() || window.location.reload()} style={{ cursor: 'pointer', userSelect: 'none' }}>сбросить результаты</div>
       </Statistic>
     </Body>
   )

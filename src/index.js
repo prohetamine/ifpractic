@@ -24,8 +24,6 @@ const MainMenu = styled.div`
   height: 595px;
   margin-left: 87px;
   margin-right: 87px;
-  display: flex;
-  flex-wrap: wrap;
 `
 
 const Block = styled.div`
@@ -41,7 +39,7 @@ const Block = styled.div`
   font-style: normal;
   font-weight: bold;
   font-size: 20px;
-  display: flex;
+  display: inline-flex;
   justify-content: center;
   align-items: center;
   user-select: none;
