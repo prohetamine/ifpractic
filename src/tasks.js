@@ -1,3 +1,8 @@
+import img_time from './assets/time.svg'
+import img_m from './assets/m.svg'
+import img_s from './assets/s.svg'
+import img_h from './assets/h.svg'
+
 const TASKS = [{
   id: 1,
   emoji: '0️⃣',
@@ -699,6 +704,91 @@ const TASKS = [{
     }
   },
   testedCodeFunction: (varData, data) => (data === '#000000bd' && !varData.color.match(/#/)) || (varData.color === data && varData.color.match(/#/)),
+  confirm: false
+}, {
+  id: 30,
+  emoji: '🕓',
+  description: 'Напишите условия которые будут выполнять функцию часов. Для этого используйте конструкцию прибавление числа <selection>s++</selection> — конкатинация и <selection>></selection> — больше. Также используйте и другие переменные: <selection>s</selection> — секунды, <selection>m</selection> — минуты и <selection>h</selection> — часы. Каждое из условий ограничивает единицу времени и перемещает другую единицу на шаг вперед.',
+  testedTime: 1,
+  updateTime: 100,
+  defaultCodeFunction: () => {
+    if (window._30ticker_s === undefined) {
+      window._30ticker_s = 10
+    }
+    if (window._30ticker_m === undefined) {
+      window._30ticker_m = 35
+    }
+    if (window._30ticker_h === undefined) {
+      window._30ticker_h = 20
+    }
+
+    const s = window._30ticker_s
+    const m = window._30ticker_m
+    const h = window._30ticker_h
+
+    return {
+      varData: {
+        s,
+        m,
+        h
+      },
+      code: `
+        var s = ${s};
+        var m = ${m};
+        var h = ${h};
+      `,
+      endCode: `
+        window._30ticker_s = s;
+        window._30ticker_m = m;
+        window._30ticker_h = h;
+
+        try {
+          const nodeConsole = document.querySelector('#console')
+
+          if (nodeConsole) {
+            nodeConsole.innerHTML = \`
+              <div style='width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; position: relative;'>
+                <img style='width: 200px; height: 200px; border-radius: 100%; position: absolute;' src='${img_time}' />
+                <img  style='width: 200px; height: 200px; border-radius: 100%; position: absolute; transform: rotateZ(\${(s*6)\}deg)' src='${img_s}' />
+                <img  style='width: 200px; height: 200px; border-radius: 100%; position: absolute; transform: rotateZ(\${(m*6)\}deg)' src='${img_m}' />
+                <img  style='width: 200px; height: 200px; border-radius: 100%; position: absolute; transform: rotateZ(\${(h*15)\}deg)' src='${img_h}' />
+                <div style='padding: 8px 10px; background: #fff; border-radius: 10px; position: absolute; top: 20px;color: #000000bd;'>\${(h => (h + '').length > 1 ? h : '0'+h)(h)}:\${(m => (m + '').length > 1 ? m : '0'+m)(m)\}:\${(s => (s + '').length > 1 ? s : '0'+s)(s)\}</div>
+              </div>
+            \`
+          }
+
+          window.hiddeLog(s, m, h)
+        } catch (e) {}
+      `
+    }
+  },
+  testedCodeFunction: (varData, _s, _m, _h) => {
+    let s = varData.s
+    let m = varData.m
+    let h = varData.h
+
+    s++
+    if (s > 59) {
+     s = 0
+     m++
+    }
+
+    if (m > 59) {
+     m = 0
+     h++
+    }
+
+    if (h > 23) {
+      h = 0
+    }
+
+    if (window._30task_true || (_s === s && _m === m && _h === h && _h === 23 && m === 59 && s === 59)) {
+      window._30task_true = true
+      return true
+    } else {
+      return false
+    }
+  },
   confirm: false
 }].map(task => ({
   ...task,

@@ -187,7 +187,7 @@ const shtamp = `
  https://prohetamine.github.io/ifpractic
 */`
 
-const Main = ({ taskId, description, defaultCodeFunction, testedCodeFunction, onConfirm }) => {
+const Main = ({ taskId, description, defaultCodeFunction, testedCodeFunction, testedTime = 300, updateTime = 1000, onConfirm }) => {
   const logRef = useRef()
   const codeTextareaRef = useRef()
   const textareaRef = useRef()
@@ -222,10 +222,10 @@ const Main = ({ taskId, description, defaultCodeFunction, testedCodeFunction, on
   useEffect(() => {
     const timeId = setInterval(() => {
       setDefaultCode(defaultCodeFunction)
-    }, isError ? 1000 : isLog ? 300 : 1000)
+    }, isError ? 1000 : isLog ? testedTime : updateTime)
 
     return () => clearInterval(timeId)
-  }, [isLog, isError])
+  }, [isLog, isError, testedTime, updateTime])
 
   useEffect(() => {
      try {
@@ -239,14 +239,14 @@ const Main = ({ taskId, description, defaultCodeFunction, testedCodeFunction, on
         const _args = (args || [])
         setLogs(l => [...l, _args.join(' ')].slice(-100))
         if (isLog) {
-          setTesting(s => testedCodeFunction(defautCode.varData, ..._args) ? (s > 9 ? s : s + 1) : 0)
+          setTesting(s => testedCodeFunction({ testCounter: s, ...defautCode.varData }, ..._args) ? (s > 9 ? s : s + 1) : 0)
         }
       }
 
       window.hiddeLog = (...args) => {
         const _args = (args || [])
         if (isLog) {
-          setTesting(s => testedCodeFunction(defautCode.varData, ..._args) ? (s > 9 ? s : s + 1) : 0)
+          setTesting(s => testedCodeFunction({ testCounter: s, ...defautCode.varData }, ..._args) ? (s > 9 ? s : s + 1) : 0)
         }
       }
 

@@ -75,6 +75,8 @@ const App = () => {
         description={task.description}
         defaultCodeFunction={task.defaultCodeFunction}
         testedCodeFunction={task.testedCodeFunction}
+        testedTime={task.testedTime}
+        updateTime={task.updateTime}
         onConfirm={
           id =>
             setTaskConfirmer(
