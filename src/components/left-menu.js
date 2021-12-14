@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
+import queryString from 'query-string'
+import { encode, decode } from 'js-base64'
 
 const LeftMenu = styled.div`
   width: 425px;
@@ -118,6 +120,30 @@ const Button = styled.div`
   cursor: pointer;
 `
 
+const CircleButton = styled.div`
+  width: 36px;
+  height: 36px;
+  background: #FFFFFF;
+  border-radius: 12px 0px;
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 15px;
+  line-height: 18px;
+  color: #000000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+  cursor: pointer;
+  &:active {
+    background: #E4E4E4;
+  }
+`
+
 const Console = styled.div`
   position: absolute;
   left: 0px;
@@ -187,18 +213,44 @@ const shtamp = `
  https://prohetamine.github.io/ifpractic
 */`
 
-const Main = ({ taskId, description, defaultCodeFunction, testedCodeFunction, testedTime = 300, updateTime = 1000, onConfirm }) => {
+const Main = ({ taskId, description, emoji, defaultCodeFunction, testedCodeFunction, testedTime = 300, updateTime = 1000, onConfirm }) => {
   const logRef = useRef()
   const codeTextareaRef = useRef()
   const textareaRef = useRef()
-  const [isLog, setIsLog] = useState(false)
+
+  const hash = window.location.hash.slice(1).split('#')
+
+  const hashCode = hash[0] ? window.decodeURI(hash[0]) : false
+  const hashLog = hash[1] ? window.decodeURI(hash[1]) : false
+  const hashPause = hash[2] ? window.decodeURI(hash[2]) : false
+
+
+  const codeParse = hashCode ? decode(hashCode) : false
+  const logParse = hashLog ? decode(hashLog) === 'true' : false
+  const pauseParse = hashPause ? decode(hashPause) === 'true' : false
+
+  const [isLog, setIsLog] = useState(logParse || false)
+  const [isPause, setIsPause] = useState(pauseParse || false)
+  const [isCopy, setIsCopy] = useState(false)
   const [logs, setLogs] = useState([])
   const [isWork, setWork] = useState(false)
   const [isError, setError] = useState(false)
   const [testing, setTesting] = useState(0)
   const [defautCode, setDefaultCode] = useState(defaultCodeFunction(''))
+
   const downline = '\n'.repeat(defautCode.code.split('\n').length)
-  const [mainCode, setMainCode] = useState(localStorage[`code${taskId}`] || downline)
+
+  const defaultMainCode = codeParse || localStorage[`code${taskId}`] || downline
+
+  const [mainCode, setMainCode] = useState(defaultMainCode)
+
+  useEffect(() => {
+    if (isCopy) {
+      setTimeout(() => {
+        setIsCopy(false)
+      }, 1000)
+    }
+  }, [isCopy])
 
   useEffect(() => {
     localStorage[`code${taskId}`] = mainCode
@@ -220,12 +272,16 @@ const Main = ({ taskId, description, defaultCodeFunction, testedCodeFunction, te
   }, [isLog])
 
   useEffect(() => {
+    if (isPause) {
+      return
+    }
+
     const timeId = setInterval(() => {
       setDefaultCode(defaultCodeFunction)
     }, isError ? 1000 : isLog ? testedTime : updateTime)
 
     return () => clearInterval(timeId)
-  }, [isLog, isError, testedTime, updateTime])
+  }, [isLog, isError, testedTime, updateTime, isPause])
 
   useEffect(() => {
      try {
@@ -256,6 +312,7 @@ const Main = ({ taskId, description, defaultCodeFunction, testedCodeFunction, te
         '\n\n\n' +
         (defautCode.endCode || '')
       )
+
       setError(false)
     } catch (e) {
       const error = e.toString()
@@ -275,7 +332,15 @@ const Main = ({ taskId, description, defaultCodeFunction, testedCodeFunction, te
       setError(true)
       setLogs(l => [...l, 'Ошибка: '+error].slice(-100))
     }
-  }, [defautCode.code, mainCode, (defautCode.endCode || '')])
+  }, [defautCode.code, mainCode, (defautCode.endCode || ''), isLog, taskId])
+
+  useEffect(() => {
+    const encodedCode = encode(mainCode)
+    const encodedLog = encode(isLog ? 'true' : 'false')
+    const encodedPause = encode(isPause ? 'true' : 'false')
+
+    window.location.href = window.location.origin + window.location.pathname + `?id=${window.encodeURI(taskId)}#${window.encodeURI(encodedCode)}#${window.encodeURI(encodedLog)}#${window.encodeURI(encodedPause)}`
+  }, [mainCode, isLog, taskId, isPause])
 
   useEffect(() => {
     const node = codeTextareaRef.current
@@ -322,7 +387,7 @@ const Main = ({ taskId, description, defaultCodeFunction, testedCodeFunction, te
   return (
     <LeftMenu>
       <TaskDescription>
-        <BoldTitle>Задание #{taskId}</BoldTitle>
+        <BoldTitle>Задание #{taskId} {emoji}</BoldTitle>
         <Description dangerouslySetInnerHTML={{ __html: description }}></Description>
       </TaskDescription>
       <CodeTextarea ref={codeTextareaRef} id='codeTextArea'>
@@ -355,32 +420,53 @@ const Main = ({ taskId, description, defaultCodeFunction, testedCodeFunction, te
             : null
         }
         <Button style={(({ bottom, right }) => ({ top: (bottom - 36)+'px', left: (right - 156)+'px' }))(document.getElementById('codeTextArea') ? document.getElementById('codeTextArea').getBoundingClientRect() : ({}))} onClick={() => setIsLog(s => !s)}>{isLog ? 'Перейти в код 💻' : 'Начать тест 🚀'}</Button>
+        <CircleButton
+          style={(({ bottom, right }) => ({ top: (bottom - 36 - 36 - 5)+'px', left: (right - 36)+'px', borderRadius: '12px 0px 0px 12px' }))(document.getElementById('codeTextArea') ? document.getElementById('codeTextArea').getBoundingClientRect() : ({}))}
+          onClick={() => {
+            const encodedCode = encode(mainCode)
+            const encodedLog = encode(isLog ? 'true' : 'false')
+            const encodedPause = encode(isPause ? 'true' : 'false')
+
+            navigator.clipboard.writeText(window.location.origin + window.location.pathname + `?id=${window.encodeURI(taskId)}#${window.encodeURI(encodedCode)}#${window.encodeURI(encodedLog)}#${window.encodeURI(encodedPause)}`)
+            setIsCopy(true)
+          }}
+        >🔗</CircleButton>
+        <CircleButton
+          style={(({ bottom, right }) => ({ top: (bottom - 36 - 36 - 36 - 10)+'px', left: (right - 36)+'px', borderRadius: '12px 0px 0px 12px' }))(document.getElementById('codeTextArea') ? document.getElementById('codeTextArea').getBoundingClientRect() : ({}))}
+          onClick={() => {
+            setIsPause(s => !s)
+          }}
+        >{isPause ? '▶️' : '⏸'}</CircleButton>
       </CodeTextarea>
       <Status>
         <StatusTitle>
           {
-            testing > 9
-              ? 'Статус: Задание выполненно!'
-              : isLog
-                  ? isError
-                    ? 'Статус: В коде ошибка'
-                    : `Статус: В процессе тестирования ${testing}/10`
-                  : isWork
-                      ? `Статус: В процессе разработки`
-                      : `Статус: Разработчик осматривается`
+            isCopy
+              ? 'Ссылка скопированна!'
+              : testing > 9
+                  ? 'Статус: Задание выполненно!'
+                  : isLog
+                      ? isError
+                        ? 'Статус: В коде ошибка'
+                        : `Статус: В процессе тестирования ${testing}/10`
+                      : isWork
+                          ? `Статус: В процессе разработки`
+                          : `Статус: Разработчик осматривается`
           }
         </StatusTitle>
         <StatusEmoji>
           {
-            testing > 9
-              ? '👍'
-              : isLog
-                  ? isError
-                      ? '🚫'
-                      : testing > 0 ? `✅` : `❌`
-                          : isWork
-                              ? `👨‍💻`
-                              : `👀`
+            isCopy
+              ? '👌'
+              : testing > 9
+                ? '👍'
+                : isLog
+                    ? isError
+                        ? '🚫'
+                        : testing > 0 ? `✅` : `❌`
+                            : isWork
+                                ? `👨‍💻`
+                                : `👀`
           }
         </StatusEmoji>
       </Status>

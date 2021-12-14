@@ -77,6 +77,7 @@ const App = () => {
         testedCodeFunction={task.testedCodeFunction}
         testedTime={task.testedTime}
         updateTime={task.updateTime}
+        emoji={task.emoji}
         onConfirm={
           id =>
             setTaskConfirmer(
@@ -90,6 +91,7 @@ const App = () => {
           )
         }
       />
+
       <MainMenu>
         {
           tasks.map((task, key) => (<Block key={key} onClick={() => window.location.href = '?id='+task.id} isConfirm={task.confirm}>{task.emoji}</Block>))
