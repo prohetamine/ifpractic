@@ -99,7 +99,7 @@ const Number = styled.div`
   user-select: none;
 `
 
-const Button = styled.div`
+const Button = styled.button`
   width: 156px;
   height: 36px;
   background: #FFFFFF;
@@ -118,9 +118,10 @@ const Button = styled.div`
   align-items: center;
   user-select: none;
   cursor: pointer;
+  border: none;
 `
 
-const CircleButton = styled.div`
+const CircleButton = styled.button`
   width: 36px;
   height: 36px;
   background: #FFFFFF;
@@ -139,9 +140,11 @@ const CircleButton = styled.div`
   align-items: center;
   user-select: none;
   cursor: pointer;
+  opacity: 0.8;
   &:active {
-    background: #E4E4E4;
+    opacity: 0.7;
   }
+  border: none;
 `
 
 const Console = styled.div`
@@ -193,6 +196,7 @@ const StatusTitle = styled.div`
 `
 
 const StatusEmoji = styled.div`
+  user-select: none;
   font-family: Roboto;
   font-style: normal;
   font-weight: 500;
@@ -348,7 +352,7 @@ const Main = ({ taskId, description, emoji, defaultCodeFunction, testedCodeFunct
 
     if (node && focusNode) {
       const focusHandler = (e) => {
-        if (e.target.name !== 'textarea') {
+        if (e.target.name !== 'textarea' && e.target.name !== 'button') {
           focusNode.focus()
           focusNode.setSelectionRange(1000, 1000)
         }
@@ -419,8 +423,9 @@ const Main = ({ taskId, description, emoji, defaultCodeFunction, testedCodeFunct
             )
             : null
         }
-        <Button style={(({ bottom, right }) => ({ top: (bottom - 36)+'px', left: (right - 156)+'px' }))(document.getElementById('codeTextArea') ? document.getElementById('codeTextArea').getBoundingClientRect() : ({}))} onClick={() => setIsLog(s => !s)}>{isLog ? 'Перейти в код 💻' : 'Начать тест 🚀'}</Button>
+        <Button name='button' style={(({ bottom, right }) => ({ top: (bottom - 36)+'px', left: (right - 156)+'px' }))(document.getElementById('codeTextArea') ? document.getElementById('codeTextArea').getBoundingClientRect() : ({}))} onClick={() => setIsLog(s => !s)}>{isLog ? 'Перейти в код 💻' : 'Начать тест 🚀'}</Button>
         <CircleButton
+          name='button'
           style={(({ bottom, right }) => ({ top: (bottom - 36 - 36 - 5)+'px', left: (right - 36)+'px', borderRadius: '12px 0px 0px 12px' }))(document.getElementById('codeTextArea') ? document.getElementById('codeTextArea').getBoundingClientRect() : ({}))}
           onClick={() => {
             const encodedCode = encode(mainCode)
@@ -432,6 +437,7 @@ const Main = ({ taskId, description, emoji, defaultCodeFunction, testedCodeFunct
           }}
         >🔗</CircleButton>
         <CircleButton
+          name='button'
           style={(({ bottom, right }) => ({ top: (bottom - 36 - 36 - 36 - 10)+'px', left: (right - 36)+'px', borderRadius: '12px 0px 0px 12px' }))(document.getElementById('codeTextArea') ? document.getElementById('codeTextArea').getBoundingClientRect() : ({}))}
           onClick={() => {
             setIsPause(s => !s)
@@ -443,30 +449,34 @@ const Main = ({ taskId, description, emoji, defaultCodeFunction, testedCodeFunct
           {
             isCopy
               ? 'Ссылка скопированна!'
-              : testing > 9
-                  ? 'Статус: Задание выполненно!'
+              : isPause
+                ? 'Код остановлен и не выполняется'
+                : testing > 9
+                  ? 'Статус: задание выполненно!'
                   : isLog
                       ? isError
-                        ? 'Статус: В коде ошибка'
-                        : `Статус: В процессе тестирования ${testing}/10`
+                        ? 'Статус: в коде ошибка'
+                        : `Статус: в процессе тестирования ${testing}/10`
                       : isWork
-                          ? `Статус: В процессе разработки`
-                          : `Статус: Разработчик осматривается`
+                          ? `Статус: в процессе разработки`
+                          : `Статус: разработчик осматривается`
           }
         </StatusTitle>
-        <StatusEmoji>
+        <StatusEmoji style={{ cursor: isCopy ? 'default' : isPause ? 'pointer' : 'default' }} onClick={() => isCopy ? null : isPause ? setIsPause(s => !s) : null}>
           {
             isCopy
-              ? '👌'
-              : testing > 9
-                ? '👍'
-                : isLog
-                    ? isError
-                        ? '🚫'
-                        : testing > 0 ? `✅` : `❌`
-                            : isWork
-                                ? `👨‍💻`
-                                : `👀`
+              ? '💚'
+              : isPause
+                  ? '⏸'
+                  : testing > 9
+                      ? '👍'
+                      : isLog
+                          ? isError
+                              ? '🚫'
+                              : testing > 0 ? `✅` : `❌`
+                                  : isWork
+                                      ? `👨‍💻`
+                                      : `👀`
           }
         </StatusEmoji>
       </Status>
