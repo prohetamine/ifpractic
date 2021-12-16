@@ -945,4 +945,4 @@ tasks.forEach(({ id, description, emoji }, i) => {
   `.replace(/    /gi, '')
 })
 
-fs.writeFileSync(__dirname+'/README.md')
+fs.writeFileSync(__dirname+'/README.md', text)
