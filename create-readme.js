@@ -942,7 +942,7 @@ tasks.forEach(({ id, description, emoji }, i) => {
     # Задание #${id} ${emoji}
 
     ${description.replace(/selection/gi, 'b')} [Открыть в редакторе](https://prohetamine.github.io/ifpractic/?id=${id})
-
+    ***
 
   `.replace(/    /gi, '')
 })
