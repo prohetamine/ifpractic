@@ -870,10 +870,6 @@ const TASKS = [{
         carY
       },
       code: `
-        var car = [
-          "🚗",
-          " "
-        ];
         var carY = ${carY}; // от 0 до 1
         var roadX = ${roadX}; // от 15 до 0
       `,
