@@ -877,7 +877,7 @@ const TASKS = [{
       code: `
         var car = [${car.map(ticket => '\n "'+ticket+'"').join(', ')}\n];
         var carY = ${carY}; // от 0 до 1
-        var roadX = ${roadX}; // от 0 до 15
+        var roadX = ${roadX}; // от 15 до 0
       `,
       endCode: `
         window.consoleOff = true
