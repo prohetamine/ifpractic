@@ -18,3 +18,7 @@ selection {
   background: #DEDEDE;
   border-radius: 3px;
 }
+
+::-webkit-scrollbar {
+    width: 0
+}
