@@ -939,9 +939,9 @@ let text = ''
 
 tasks.forEach(({ id, description, emoji }, i) => {
   text += `
-    # [Задание #${id}]('https://prohetamine.github.io/ifpractic/?id=${id}') ${emoji}
+    # [Задание #${id}](https://prohetamine.github.io/ifpractic/?id=${id}) ${emoji}
 
-    ${description.replace(/selection/gi, 'b')} [Пройти тестирование]('https://prohetamine.github.io/ifpractic/?id=${id}')
+    ${description.replace(/selection/gi, 'b')} [Пройти тестирование](https://prohetamine.github.io/ifpractic/?id=${id})
 
 
   `.replace(/    /gi, '')
