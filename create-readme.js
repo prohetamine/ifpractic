@@ -939,7 +939,7 @@ let text = ''
 
 tasks.forEach(({ id, description, emoji }, i) => {
   text += `
-    # [Задание #${id}](https://prohetamine.github.io/ifpractic/?id=${id}) ${emoji}
+    # Задание #${id} ${emoji}
 
     ${description.replace(/selection/gi, 'b')} [Пройти тестирование](https://prohetamine.github.io/ifpractic/?id=${id})
 
