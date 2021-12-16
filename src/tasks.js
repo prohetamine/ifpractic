@@ -694,34 +694,6 @@ const TASKS = [{
   confirm: false
 }, {
   id: 26,
-  emoji: '➕',
-  description: 'Напишите условие которое будет выводить только результат сложения используя оператор <selection>==</selection> — равенство. Этот калькулятор сломан и иногда вместо чисел принимает строки их нужно отфильровать спомощью функцию <selection>typeof</selection> — определяет тип данных в переменной. Используйте конструкцию: <selection>console.log(a + b)</selection> чтобы вывести в консоль.',
-  defaultCodeFunction: () => {
-    const symbols = ['+', '+', '+', '-', '/', '*', '%']
-    const as = ['3wffwe34', '34222e', 'sf43', '_325g2de', '$2335%432', '$3', '>3', ...Array(40).fill(0).map((_, key) => key - 5)]
-    const bs = ['eeww3', 'helloworld', 'yes1', 'l21ol', '^32', '+098', '(19673)', ...Array(40).fill(0).map((_, key) => key)]
-
-    const symbol = symbols[parseInt(Math.random() * symbols.length)]
-    const b = bs[parseInt(Math.random() * bs.length)]
-    const a = as[parseInt(Math.random() * as.length)]
-
-    return {
-      varData: {
-        a,
-        b,
-        symbol
-      },
-      code: `
-        var a = ${typeof(a) === 'number' ? `${a}`: `"${a}"`};
-        var b = ${typeof(b) === 'number' ? `${b}`: `"${b}"`};
-        var symbol = "${symbol}";
-      `
-    }
-  },
-  testedCodeFunction: (varData, sum) => (typeof(varData.a) === 'number' && typeof(varData.b) === 'number') && varData.a + varData.b === sum && varData.symbol === '+',
-  confirm: false
-}, {
-  id: 27,
   emoji: '🐙',
   description: 'Напишите условие которое соберет ровно 10 осьминогов <selection>🐙</selection> в переменную. Используйте оператор <selection>==</selection> — равенство, <selection><=</selection> — меньше или равно, конструкцию прибавления строки <selection>octopuses += animal</selection> — конкатинация и метод <selection>length</selection> — определяет размер строки. Внимание каждый из символов emoji занимает 2 символа в строке. Используйте конструкцию: <selection>console.log(octopuses)</selection> чтобы вывести в консоль.',
   defaultCodeFunction: () => {
@@ -750,6 +722,34 @@ const TASKS = [{
     }
   },
   testedCodeFunction: (varData, octopuses) => (varData.octopuses.length === 20 && varData.octopuses.split('').filter(octopus => octopus === '\uD83D').length === 10) && (octopuses.length === 20 && octopuses.split('').filter(octopus => octopus === '\uD83D').length === 10),
+  confirm: false
+}, {
+  id: 27,
+  emoji: '➕',
+  description: 'Напишите условие которое будет выводить только результат сложения используя оператор <selection>==</selection> — равенство. Этот калькулятор сломан и иногда вместо чисел принимает строки их нужно отфильровать спомощью функцию <selection>typeof</selection> — определяет тип данных в переменной. Используйте конструкцию: <selection>console.log(a + b)</selection> чтобы вывести в консоль.',
+  defaultCodeFunction: () => {
+    const symbols = ['+', '+', '+', '-', '/', '*', '%']
+    const as = ['3wffwe34', '34222e', 'sf43', '_325g2de', '$2335%432', '$3', '>3', ...Array(40).fill(0).map((_, key) => key - 5)]
+    const bs = ['eeww3', 'helloworld', 'yes1', 'l21ol', '^32', '+098', '(19673)', ...Array(40).fill(0).map((_, key) => key)]
+
+    const symbol = symbols[parseInt(Math.random() * symbols.length)]
+    const b = bs[parseInt(Math.random() * bs.length)]
+    const a = as[parseInt(Math.random() * as.length)]
+
+    return {
+      varData: {
+        a,
+        b,
+        symbol
+      },
+      code: `
+        var a = ${typeof(a) === 'number' ? `${a}`: `"${a}"`};
+        var b = ${typeof(b) === 'number' ? `${b}`: `"${b}"`};
+        var symbol = "${symbol}";
+      `
+    }
+  },
+  testedCodeFunction: (varData, sum) => (typeof(varData.a) === 'number' && typeof(varData.b) === 'number') && varData.a + varData.b === sum && varData.symbol === '+',
   confirm: false
 }, {
   id: 28,
