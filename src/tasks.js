@@ -560,6 +560,139 @@ const TASKS = [{
   testedCodeFunction: (varData, string) => string.find(s => s === 'JS' || s === 'JavaScript') && varData.string.match(/(JS|JavaScript)/gi).find(s => s === 'JS' || s === 'JavaScript'),
   confirm: false
 }, {
+  id: 25,
+  emoji: '🕓',
+  description: 'Напишите условия которые будут выполнять функцию часов. Для этого используйте конструкцию прибавление числа <selection>s++</selection> — конкатинация и <selection>></selection> — больше. Также используйте и другие переменные: <selection>s</selection> — секунды, <selection>m</selection> — минуты и <selection>h</selection> — часы. Каждое из условий ограничивает единицу времени и перемещает другую единицу на шаг вперед до ограничителя.',
+  testedTime: 1,
+  updateTime: 100,
+  defaultCodeFunction: () => {
+    window.consoleOff = false
+
+    if (window._30ticker_s === undefined) {
+      window._30ticker_s = 10
+    }
+    if (window._30ticker_m === undefined) {
+      window._30ticker_m = 35
+    }
+    if (window._30ticker_h === undefined) {
+      window._30ticker_h = 20
+    }
+
+    const s = window._30ticker_s
+    const m = window._30ticker_m
+    const h = window._30ticker_h
+
+    return {
+      varData: {
+        s,
+        m,
+        h
+      },
+      code: `
+        var s = ${s}; // от 0 до 59
+        var m = ${m}; // от 0 до 59
+        var h = ${h}; // от 0 до 23
+      `,
+      endCode: `
+        window._30ticker_s = s;
+        window._30ticker_m = m;
+        window._30ticker_h = h;
+
+        try {
+          window.consoleOff = true
+          const nodeConsole = document.querySelector('#console')
+
+          if (nodeConsole) {
+            nodeConsole.innerHTML = \`
+              <div style='width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; position: relative;'>
+                <img style='width: 200px; height: 200px; border-radius: 100%; position: absolute;' src='${img_time}' />
+                <img  style='width: 200px; height: 200px; border-radius: 100%; position: absolute; transform: rotateZ(\${(s*6)\}deg)' src='${img_s}' />
+                <img  style='width: 200px; height: 200px; border-radius: 100%; position: absolute; transform: rotateZ(\${(m*6)\}deg)' src='${img_m}' />
+                <img  style='width: 200px; height: 200px; border-radius: 100%; position: absolute; transform: rotateZ(\${(h*15)\}deg)' src='${img_h}' />
+                <div style='padding: 8px 10px; background: #fff; border-radius: 10px; position: absolute; top: 20px;color: #000000bd;'>\${(h => (h + '').length > 1 ? h : '0'+h)(h)}:\${(m => (m + '').length > 1 ? m : '0'+m)(m)\}:\${(s => (s + '').length > 1 ? s : '0'+s)(s)\}</div>
+              </div>
+            \`
+          }
+
+          window.hiddeLog(s, m, h)
+        } catch (e) {}
+
+        ;var r = ${Math.random()};
+      `
+    }
+  },
+  testedCodeFunction: (varData, _s, _m, _h) => {
+    let s = varData.s
+    let m = varData.m
+    let h = varData.h
+
+    s++
+    if (s > 59) {
+     s = 0
+     m++
+    }
+
+    if (m > 59) {
+     m = 0
+     h++
+    }
+
+    if (h > 23) {
+      h = 0
+    }
+
+    if ((window._30task_true && s < 70 && m < 70 && h < 25) || (_s === s && _m === m && _h === h && _h === 23 && m === 59 && s === 59 && s < 70 && m < 70 && h < 25)) {
+      window._30task_true = true
+      return true
+    } else {
+      return false
+    }
+  },
+  confirm: false
+}, {
+  id: 25,
+  emoji: '🚂',
+  description: 'Напишите условие которое выдаст билет <selection>Сочи - Краснодар - Москва</selection>. Для этого используйте оператор <selection>==</selection> — равно, чтобы выбрать элемент из массива с билетами используйте <selection>tickets[i]</selection>. Используйте конструкцию: <selection>console.log(tickets[i])</selection> чтобы вывести в консоль.',
+  testedTime: 30,
+  updateTime: 1000,
+  defaultCodeFunction: () => {
+    if (window._31tick === undefined) {
+      window._31tick = 0
+    }
+
+    const tickets = [
+      'Сочи - Краснодар - Москва',
+      'Астрахань - Москва',
+      'Саратов - Ростов',
+      'Сочи - Москва',
+      'Сочи - Санкт-Петербург',
+      'Пятигорск - Санкт-Петербург'
+    ]
+
+    const i = window._31tick
+
+    return {
+      varData: {
+        tickets,
+        i
+      },
+      code: `
+        var tickets = [${tickets.map(ticket => '\n "'+ticket+'"').join(', ')}\n]; // Билеты на поезд
+        var i = ${i};
+      `,
+      endCode: `
+        if (window._31tick >= tickets.length - 1) {
+          i = 0
+        } else {
+          i += 1;
+        }
+        window._31tick = i
+      `
+    }
+  },
+  testedCodeFunction: (varData, ticket) => varData.tickets[varData.i] === ticket && ticket === 'Сочи - Краснодар - Москва',
+  confirm: false
+}, {
   id: 26,
   emoji: '➕',
   description: 'Напишите условие которое будет выводить только результат сложения используя оператор <selection>==</selection> — равенство. Этот калькулятор сломан и иногда вместо чисел принимает строки их нужно отфильровать спомощью функцию <selection>typeof</selection> — определяет тип данных в переменной. Используйте конструкцию: <selection>console.log(a + b)</selection> чтобы вывести в консоль.',
@@ -713,139 +846,6 @@ const TASKS = [{
   confirm: false
 }, {
   id: 30,
-  emoji: '🕓',
-  description: 'Напишите условия которые будут выполнять функцию часов. Для этого используйте конструкцию прибавление числа <selection>s++</selection> — конкатинация и <selection>></selection> — больше. Также используйте и другие переменные: <selection>s</selection> — секунды, <selection>m</selection> — минуты и <selection>h</selection> — часы. Каждое из условий ограничивает единицу времени и перемещает другую единицу на шаг вперед до ограничителя.',
-  testedTime: 1,
-  updateTime: 100,
-  defaultCodeFunction: () => {
-    window.consoleOff = false
-
-    if (window._30ticker_s === undefined) {
-      window._30ticker_s = 10
-    }
-    if (window._30ticker_m === undefined) {
-      window._30ticker_m = 35
-    }
-    if (window._30ticker_h === undefined) {
-      window._30ticker_h = 20
-    }
-
-    const s = window._30ticker_s
-    const m = window._30ticker_m
-    const h = window._30ticker_h
-
-    return {
-      varData: {
-        s,
-        m,
-        h
-      },
-      code: `
-        var s = ${s}; // от 0 до 59
-        var m = ${m}; // от 0 до 59
-        var h = ${h}; // от 0 до 23
-      `,
-      endCode: `
-        window._30ticker_s = s;
-        window._30ticker_m = m;
-        window._30ticker_h = h;
-
-        try {
-          window.consoleOff = true
-          const nodeConsole = document.querySelector('#console')
-
-          if (nodeConsole) {
-            nodeConsole.innerHTML = \`
-              <div style='width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; position: relative;'>
-                <img style='width: 200px; height: 200px; border-radius: 100%; position: absolute;' src='${img_time}' />
-                <img  style='width: 200px; height: 200px; border-radius: 100%; position: absolute; transform: rotateZ(\${(s*6)\}deg)' src='${img_s}' />
-                <img  style='width: 200px; height: 200px; border-radius: 100%; position: absolute; transform: rotateZ(\${(m*6)\}deg)' src='${img_m}' />
-                <img  style='width: 200px; height: 200px; border-radius: 100%; position: absolute; transform: rotateZ(\${(h*15)\}deg)' src='${img_h}' />
-                <div style='padding: 8px 10px; background: #fff; border-radius: 10px; position: absolute; top: 20px;color: #000000bd;'>\${(h => (h + '').length > 1 ? h : '0'+h)(h)}:\${(m => (m + '').length > 1 ? m : '0'+m)(m)\}:\${(s => (s + '').length > 1 ? s : '0'+s)(s)\}</div>
-              </div>
-            \`
-          }
-
-          window.hiddeLog(s, m, h)
-        } catch (e) {}
-
-        ;var r = ${Math.random()};
-      `
-    }
-  },
-  testedCodeFunction: (varData, _s, _m, _h) => {
-    let s = varData.s
-    let m = varData.m
-    let h = varData.h
-
-    s++
-    if (s > 59) {
-     s = 0
-     m++
-    }
-
-    if (m > 59) {
-     m = 0
-     h++
-    }
-
-    if (h > 23) {
-      h = 0
-    }
-
-    if ((window._30task_true && s < 70 && m < 70 && h < 25) || (_s === s && _m === m && _h === h && _h === 23 && m === 59 && s === 59 && s < 70 && m < 70 && h < 25)) {
-      window._30task_true = true
-      return true
-    } else {
-      return false
-    }
-  },
-  confirm: false
-}, {
-  id: 31,
-  emoji: '🚂',
-  description: 'Напишите условие которое выдаст билет <selection>Сочи - Краснодар - Москва</selection>. Для этого используйте оператор <selection>==</selection> — равно, чтобы выбрать элемент из массива с билетами используйте <selection>tickets[i]</selection>. Используйте конструкцию: <selection>console.log(tickets[i])</selection> чтобы вывести в консоль.',
-  testedTime: 30,
-  updateTime: 1000,
-  defaultCodeFunction: () => {
-    if (window._31tick === undefined) {
-      window._31tick = 0
-    }
-
-    const tickets = [
-      'Сочи - Краснодар - Москва',
-      'Астрахань - Москва',
-      'Саратов - Ростов',
-      'Сочи - Москва',
-      'Сочи - Санкт-Петербург',
-      'Пятигорск - Санкт-Петербург'
-    ]
-
-    const i = window._31tick
-
-    return {
-      varData: {
-        tickets,
-        i
-      },
-      code: `
-        var tickets = [${tickets.map(ticket => '\n "'+ticket+'"').join(', ')}\n]; // Билеты на поезд
-        var i = ${i};
-      `,
-      endCode: `
-        if (window._31tick >= tickets.length - 1) {
-          i = 0
-        } else {
-          i += 1;
-        }
-        window._31tick = i
-      `
-    }
-  },
-  testedCodeFunction: (varData, ticket) => varData.tickets[varData.i] === ticket && ticket === 'Сочи - Краснодар - Москва',
-  confirm: false
-}, {
-  id: 32,
   emoji: '🚗',
   description: 'Напишите условия которые научат машину не врезаться, у машины нет цели но есть только путь, чтобы перемещаться по дороге присвивайте переменной <selection>carY</selection> одно из двух значений <selection>0</selection> или <selection>1</selection>, также используйте оператор <selection>==</selection> — равно, чтобы выбрать в какой момент свернуть с одно полосы на другую. Начните тест 🚀 сразу чтобы получить больше данных.',
   testedTime: 500,
