@@ -668,6 +668,8 @@ const TASKS = [{
   emoji: '📀',
   description: 'Напишите условие которое будет пропускать только цвета например <selection>#ff00aa</selection> — цвет в шестнадцатеричной системе счисления. Используя метод <selection>match</selection> — регулярные выражения. Присвойте переменной <selection>consoleBgColor</selection> нормальный цвет',
   defaultCodeFunction: () => {
+    window.consoleOff = false
+
     const getRandomColor = () => {
       const symbols = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f']
 
@@ -689,6 +691,8 @@ const TASKS = [{
       `,
       endCode: `
         try {
+          window.consoleOff = true
+
           const nodeConsole = document.querySelector('#console')
           nodeConsole.style.background = consoleBgColor.length !== 9 ? consoleBgColor + 'bd' : consoleBgColor
           if (consoleBgColor !== '#000000bd') {
@@ -700,6 +704,8 @@ const TASKS = [{
         } catch (e) {
           window.hiddeLog(consoleBgColor)
         }
+
+        ;var r = ${Math.random()};
       `
     }
   },
@@ -712,6 +718,8 @@ const TASKS = [{
   testedTime: 1,
   updateTime: 100,
   defaultCodeFunction: () => {
+    window.consoleOff = false
+
     if (window._30ticker_s === undefined) {
       window._30ticker_s = 10
     }
@@ -743,6 +751,7 @@ const TASKS = [{
         window._30ticker_h = h;
 
         try {
+          window.consoleOff = true
           const nodeConsole = document.querySelector('#console')
 
           if (nodeConsole) {
@@ -759,6 +768,8 @@ const TASKS = [{
 
           window.hiddeLog(s, m, h)
         } catch (e) {}
+
+        ;var r = ${Math.random()};
       `
     }
   },
@@ -790,6 +801,147 @@ const TASKS = [{
     }
   },
   confirm: false
+}, {
+  id: 31,
+  emoji: '🚂',
+  description: 'Напишите условие которое выдаст билет <selection>Сочи - Краснодар - Москва</selection>. Для этого используйте оператор <selection>==</selection> — равно, чтобы выбрать элемент из массива с билетами используйте <selection>tickets[i]</selection>. Используйте конструкцию: <selection>console.log(tickets[i])</selection> чтобы вывести в консоль.',
+  testedTime: 30,
+  updateTime: 1000,
+  defaultCodeFunction: () => {
+    if (window._31tick === undefined) {
+      window._31tick = 0
+    }
+
+    const tickets = [
+      'Сочи - Краснодар - Москва',
+      'Астрахань - Москва',
+      'Саратов - Ростов',
+      'Сочи - Москва',
+      'Сочи - Санкт-Петербург',
+      'Пятигорск - Санкт-Петербург'
+    ]
+
+    const i = window._31tick
+
+    return {
+      varData: {
+        tickets,
+        i
+      },
+      code: `
+        var tickets = [${tickets.map(ticket => '\n "'+ticket+'"').join(', ')}\n]; // Билеты на поезд
+        var i = ${i};
+      `,
+      endCode: `
+        if (window._31tick >= tickets.length - 1) {
+          i = 0
+        } else {
+          i += 1;
+        }
+        window._31tick = i
+      `
+    }
+  },
+  testedCodeFunction: (varData, ticket) => varData.tickets[varData.i] === ticket && ticket === 'Сочи - Краснодар - Москва',
+  confirm: false
+}, {
+  id: 32,
+  emoji: '🚗',
+  description: 'Напишите условия которые научат машину не врезаться, у машины нет цели но есть только путь, чтобы перемещаться по дороге присвивайте переменной <selection>carY</selection> одно из двух значений <selection>0</selection> или <selection>1</selection>, также используйте оператор <selection>==</selection> — равно, чтобы выбрать в какой момент свернуть с одно полосы на другую.',
+  testedTime: 500,
+  updateTime: 1000,
+  defaultCodeFunction: () => {
+    window.consoleOff = false
+
+    if (window._32roadX === undefined) {
+      window._32roadX = 15
+    }
+
+    if (window._32carY === undefined) {
+      window._32carY = 1
+    }
+
+    const car = [
+      '🚗',
+      ' '
+    ]
+
+    const roadX = window._32roadX
+    const carY = window._32carY
+
+    return {
+      varData: {
+        roadX,
+        carY
+      },
+      code: `
+        var car = [${car.map(ticket => '\n "'+ticket+'"').join(', ')}\n];
+        var carY = ${carY}; // от 0 до 1
+        var roadX = ${roadX}; // от 0 до 15
+      `,
+      endCode: `
+        window.consoleOff = true
+
+        if (roadX < 1) {
+          roadX = 16
+        }
+
+        roadX -= 1
+
+        const road = Array(16).fill(' ')
+
+        road[roadX] = '🚗'
+
+        if (roadX === 11 || roadX === 8) {
+          window.hiddeLog(roadX, carY, 0)
+          window.hiddeLog(roadX, carY, 0)
+        }
+
+        if (roadX === 5 || roadX === 0) {
+          window.hiddeLog(roadX, carY, 1)
+          window.hiddeLog(roadX, carY, 1)
+          window.hiddeLog(roadX, carY, 1)
+        }
+
+        try {
+          window.consoleOff = true
+          const nodeConsole = document.querySelector('#console')
+
+          const symbol = s => \`<span style="position: relative; display: inline-flex; justify-content: center; align-items: center; overflow: hidden; cursor: text;"><span style="transform: scale(0.01)">\🚕</span><span style="position: absolute; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; box-sizing: border-box, z-index: 1999; font-size: \${parseInt(s).toString() !== 'NaN' ? '8px' : '15px'\}; color: \${parseInt(s).toString() !== 'NaN' ? '#ddd' : '#fff'\};">\${s\}</span></span>\`
+
+          if (nodeConsole) {
+            nodeConsole.innerHTML = \`
+              <div style="position: relative; display: flex; flex-direction: column; width: 100%;">
+                <div style="width: 100%;">
+                  \${symbol('🚕')\}\${symbol('1')\}\${symbol('2')\}\${symbol('3')\}\${symbol('4')\}\${symbol('🚙')\}\${symbol('6')\}\${symbol('7')\}\${symbol('8')\}\${symbol('9')\}\${symbol('10')\}\${symbol('11')\}\${symbol('12')\}\${symbol('13')\}\${symbol('14')\}\${symbol('15')\}
+                </div>
+                <div style="width: 100%;">
+                  ========================================
+                </div>
+                <div style="width: 100%;">
+                  \${symbol('0')\}\${symbol('1')\}\${symbol('🚛')\}\${symbol('3')\}\${symbol('4')\}\${symbol('5')\}\${symbol('6')\}\${symbol('7')\}\${symbol('🚚')\}\${symbol('9')\}\${symbol('10')\}\${symbol('🚌')\}\${symbol('12')\}\${symbol('13')\}\${symbol('14')\}\${symbol('15')\}
+                </div>
+                <div style="width: 100%; position: absolute; \${carY ? 'bottom: 0px;' : 'top: 0px;'\} left: 0px;">
+                  \${road.map(r => symbol(r)).join('')\}
+                </div>
+              </div>
+            \`
+          }
+        } catch (e) {
+          console.log(e)
+        }
+
+        window._32roadX = roadX
+        window._32carY = carY
+
+        ;var r = ${Math.random()};
+      `
+    }
+  },
+  testedCodeFunction: (varData, roadX, carY, isCarY) => {
+    return varData.roadX - 1 === roadX && carY === isCarY
+  },
+  confirm: false
 }].map(task => ({
   ...task,
   testedCodeFunction: (...args) => {
@@ -800,6 +952,8 @@ const TASKS = [{
     }
   },
   defaultCodeFunction: (a) => {
+    window.consoleOff = true
+
     const defaultCodeFunction = task.defaultCodeFunction(a)
     return {
       ...defaultCodeFunction,

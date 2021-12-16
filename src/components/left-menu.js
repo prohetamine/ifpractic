@@ -417,7 +417,11 @@ const Main = ({ taskId, description, emoji, defaultCodeFunction, testedCodeFunct
             ? (
               <Console ref={logRef} id='console'>
                 {
-                  logs.map((row, key) => <Row key={key}>{row}</Row>)
+                  window.consoleOff
+                    ? logs.map((row, key) => <Row key={key}>{row}</Row>)
+                    : isError
+                        ? logs.map((row, key) => <Row key={key}>{row}</Row>)
+                        : null
                 }
               </Console>
             )
