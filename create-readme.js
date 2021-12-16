@@ -886,7 +886,7 @@ const tasks = [{
 }, {
   id: 30,
   emoji: '📀',
-  description: 'Напишите условие которое будет пропускать только цвета например <selection>#ff00aa</selection> — цвет в шестнадцатеричной системе счисления. Используя метод <selection>match</selection> — регулярные выражения. Присвойте переменной <selection>consoleBgColor</selection> нормальный цвет',
+  description: 'Напишите условие которое будет пропускать только цвета например <selection>#ff00aa</selection> — цвет в шестнадцатеричной системе счисления. Используя метод <selection>match</selection> — регулярные выражения. Присвойте переменной <selection>consoleBgColor</selection> нормальный цвет.',
   defaultCodeFunction: () => {
     window.consoleOff = false
 
@@ -941,7 +941,7 @@ tasks.forEach(({ id, description, emoji }, i) => {
   text += `
     # Задание #${id} ${emoji}
 
-    ${description.replace(/selection/gi, 'b')} [Пройти тестирование](https://prohetamine.github.io/ifpractic/?id=${id})
+    ${description.replace(/selection/gi, 'b')} [Открыть в редакторе](https://prohetamine.github.io/ifpractic/?id=${id})
 
 
   `.replace(/    /gi, '')
